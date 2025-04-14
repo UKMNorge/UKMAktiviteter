@@ -27,6 +27,7 @@ Systemet er bygget med:
 5. Sett `DB_CONNECTION=none` i `.env`-filen
 6. Forsikre deg om at `SESSION_DRIVER` er satt til `file` eller  cookie` (ikke `database`)
 7. Kjør `php artisan key:generate` for å generere applikasjonsnøkkel
+8. Endre cors domenet i `vite.config.js`
 
 ## Utvikling
 
