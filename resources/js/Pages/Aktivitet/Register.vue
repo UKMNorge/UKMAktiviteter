@@ -39,11 +39,13 @@ const submit = () => {
     <v-container>
       <v-row class="justify-center">
         <v-col cols="12" sm="10" md="8" lg="6">
-          <v-card class="pa-5" color="#fff055">
-            <v-card-title class="text-center mb-4">
-              <div class="responsive-title">Påmelding til</div>
-              <div class="activity-name">{{ props.aktivitetNavn || 'aktivitet' }}</div>
-            </v-card-title>
+          <!-- Custom card with guaranteed white border -->
+          <div class="custom-card-outer">
+            <div class="custom-card-inner">
+              <div class="text-center mb-4">
+                <div class="responsive-title">Påmelding til</div>
+                <div class="activity-name">{{ props.aktivitetNavn || 'aktivitet' }}</div>
+              </div>
             
             <div v-if="error" class="mb-4">
               <v-alert 
@@ -58,9 +60,12 @@ const submit = () => {
               </v-alert>
             </div>
             
-            <v-card-text>
-              <p class="mb-4 text-body-1 responsive-text">
+              <!-- <p class="mb-4 text-body-1 responsive-text">
                 For å melde deg på {{ props.aktivitetNavn ? 'aktiviteten "' + props.aktivitetNavn + '"' : 'denne aktiviteten' }}, vennligst skriv inn ditt mobilnummer nedenfor.
+                Du vil motta en verifiseringskode på SMS for å bekrefte påmeldingen.
+              </p> -->
+              <p class="mb-4 text-body-1 responsive-text">
+                For å melde deg på, vennligst skriv inn ditt mobilnummer nedenfor.
                 Du vil motta en verifiseringskode på SMS for å bekrefte påmeldingen.
               </p>
 
@@ -68,7 +73,7 @@ const submit = () => {
                 <v-text-field
                   v-model="form.mobileNumber"
                   label="Mobilnummer"
-                  variant="outlined"
+                  variant="solo"
                   type="tel"
                   :error-messages="form.errors.mobileNumber"
                   required
@@ -77,7 +82,7 @@ const submit = () => {
 
                 <v-btn
                   type="submit"
-                  color="primary"
+                  color="#00ff89"
                   block
                   size="large"
                   :loading="form.processing"
@@ -86,8 +91,8 @@ const submit = () => {
                   Meld meg på
                 </v-btn>
               </form>
-            </v-card-text>
-          </v-card>
+            </div>
+          </div>
         </v-col>
       </v-row>
     </v-container>
@@ -95,6 +100,21 @@ const submit = () => {
 </template>
 
 <style scoped>
+/* Custom card with white border */
+.custom-card-outer {
+  background-color: white;
+  border-radius: 8px;
+  padding: 3px;
+  margin-bottom: 24px;
+  margin-top: 12px;
+}
+
+.custom-card-inner {
+  background-color: #01004c;
+  border-radius: 6px;
+  padding: 20px;
+}
+
 .responsive-title {
   font-size: 1.8rem; 
   font-weight: 500;

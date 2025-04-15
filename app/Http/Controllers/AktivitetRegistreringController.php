@@ -18,24 +18,6 @@ class AktivitetRegistreringController extends Controller
     public function showRegistrationForm($tidspunktId)
     {
         try {
-            // First check if the activity exists in the database
-            $sql = new \UKMNorge\Database\SQL\Query(
-                "SELECT COUNT(*) AS count FROM `" . \UKMNorge\Arrangement\Aktivitet\AktivitetTidspunkt::TABLE . "` 
-                WHERE `tidspunkt_id` = '#id'",
-                [
-                    'id' => (int) $tidspunktId
-                ]
-            );
-            
-            $result = $sql->run();
-            $row = \UKMNorge\Database\SQL\Query::fetch($result);
-            
-            if ($row['count'] == 0) {
-                // Activity doesn't exist at all
-                return redirect()->route('welcome')
-                    ->with('warning', 'Aktiviteten finnes ikke.');
-            }
-            
             // Try to create an instance of AktivitetTidspunkt with the given ID
             // The constructor will throw an exception if the activity doesn't exist
             $aktivitetTidspunkt = new \UKMNorge\Arrangement\Aktivitet\AktivitetTidspunkt(
@@ -124,9 +106,11 @@ class AktivitetRegistreringController extends Controller
             if (strpos($errorMessage, 'ikke plass til flere') !== false) {
                 $errorMessage = 'Det er ikke flere ledige plasser på denne aktiviteten.';
             } else if (strpos($errorMessage, 'Deltaker er allerede påmeldt') !== false) {
-                $errorMessage = 'Dette mobilnummeret er allerede registrert for denne aktiviteten.';
+                $errorMessage = 'Du er allerede påmeldt denne aktiviteten.';
             } else if (strpos($errorMessage, 'brukeren er ikke intern') !== false) {
                 $errorMessage = 'Du må være registrert som intern deltaker for å melde deg på denne aktiviteten.';
+            } else if (strpos($errorMessage, 'Brukeren er ikke intern i arrangementet og kan derfor ikke melde seg på') !== false) {
+                $errorMessage = 'Mobilnummeret er ikke registrert i arrangementet. Bruk mobilnummeret du meldte deg på UKM med.';
             }
             
             // Add error to session flash AND validation errors

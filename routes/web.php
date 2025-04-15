@@ -19,25 +19,6 @@ Route::get('/{tidspunktId}', function ($tidspunktId) {
     // Validate that the ID is numeric
     if (is_numeric($tidspunktId)) {
         try {
-            // First check if the activity exists in the database
-            $sql = new \UKMNorge\Database\SQL\Query(
-                "SELECT COUNT(*) AS count FROM `" . \UKMNorge\Arrangement\Aktivitet\AktivitetTidspunkt::TABLE . "` 
-                WHERE `tidspunkt_id` = '#id'",
-                [
-                    'id' => (int) $tidspunktId
-                ]
-            );
-            
-            $result = $sql->run();
-            $row = \UKMNorge\Database\SQL\Query::fetch($result);
-            
-            if ($row['count'] == 0) {
-                // Activity doesn't exist at all
-                return redirect()->route('welcome')
-                    ->with('warning', 'Aktiviteten finnes ikke.');
-            }
-            
-            // Activity exists, now create the object
             $aktivitetTidspunkt = new \UKMNorge\Arrangement\Aktivitet\AktivitetTidspunkt(
                 (int) $tidspunktId
             );

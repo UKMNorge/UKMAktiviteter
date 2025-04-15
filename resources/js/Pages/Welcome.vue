@@ -29,10 +29,11 @@ onMounted(() => {
     <Head title="UKM Aktiviteter" />
     <GuestLayout>
         <v-container>
-            <v-row>
-                <v-col cols="12">
-                    <v-card class="mb-6 pa-4" color="#fff055">
-                        <v-card-text>
+            <v-row class="justify-center">
+                <v-col cols="12" sm="10" md="8" lg="6">
+                    <!-- Custom card with guaranteed white border -->
+                    <div class="custom-card-outer">
+                        <div class="custom-card-inner">
                             <div class="text-center mb-6">
                                 <v-icon icon="mdi-calendar-check" size="x-large" color="primary" class="mb-4"></v-icon>
                                 <h1 class="text-h3 mb-2">{{ title }}</h1>
@@ -41,18 +42,18 @@ onMounted(() => {
                             
                             <v-alert
                                 v-if="localWarning"
-                                :type="localWarning === 'Aktiviteten finnes ikke.' ? 'error' : 'warning'"
-                                :variant="localWarning === 'Aktiviteten finnes ikke.' ? 'flat' : 'tonal'"
-                                :color="localWarning === 'Aktiviteten finnes ikke.' ? '#ff3d00' : undefined"
-                                :class="['mb-4 text-center', localWarning === 'Aktiviteten finnes ikke.' ? 'error-message' : '']"
-                                :border="localWarning === 'Aktiviteten finnes ikke.' ? 'top' : undefined"
+                                :type="localWarning === 'Aktiviteten finnes ikke.' ? 'error' : localWarning === 'Det er ikke flere ledige plasser på denne aktiviteten.' ? 'error' : 'warning'"
+                                :variant="localWarning === 'Aktiviteten finnes ikke.' || localWarning === 'Det er ikke flere ledige plasser på denne aktiviteten.' ? 'flat' : 'tonal'"
+                                :color="localWarning === 'Aktiviteten finnes ikke.' ? '#00ff89' : localWarning === 'Det er ikke flere ledige plasser på denne aktiviteten.' ? '#00ff89' : undefined"
+                                :class="['mb-4 text-center', (localWarning === 'Aktiviteten finnes ikke.' || localWarning === 'Det er ikke flere ledige plasser på denne aktiviteten.') ? 'error-message' : '']"
+                                :border="localWarning === 'Aktiviteten finnes ikke.' || localWarning === 'Det er ikke flere ledige plasser på denne aktiviteten.' ? 'top' : undefined"
                                 elevation="3"
                             >
-                                <strong v-if="localWarning === 'Aktiviteten finnes ikke.'">{{ localWarning }}</strong>
+                                <strong v-if="localWarning === 'Aktiviteten finnes ikke.' || localWarning === 'Det er ikke flere ledige plasser på denne aktiviteten.'">{{ localWarning }}</strong>
                                 <template v-else>{{ localWarning }}</template>
                             </v-alert>
                             
-                            <p class="text-body-1 mb-4">
+                            <p v-if="!localWarning" class="text-body-1 mb-4">
                                 Her kan du melde deg på til UKM-aktiviteter.
                             </p>
                             
@@ -61,13 +62,31 @@ onMounted(() => {
                                 type="info"
                                 variant="elevated"
                                 class="mb-4"
+                                color="#00ff89"
                             >
                                 Du kan ikke aksessere denne siden direkte.
                             </v-alert>
-                        </v-card-text>
-                    </v-card>
+                        </div>
+                    </div>
                 </v-col>
             </v-row>
         </v-container>
     </GuestLayout>
 </template>
+
+<style scoped>
+.custom-card-outer {
+  background-color: white;
+  border-radius: 8px;
+  padding: 3px;
+  margin-bottom: 24px;
+  margin-top: 12px;
+}
+
+.custom-card-inner {
+  background-color: #01004c;
+  border-radius: 6px;
+  padding: 16px;
+  color: white;
+}
+</style>
