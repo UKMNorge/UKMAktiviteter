@@ -24,12 +24,31 @@ class AktivitetRegistreringController extends Controller
                 (int) $tidspunktId
             );
             
-            // If no exception was thrown, get activity info and show the registration form
+            // If no exception was thrown, get activity info and time slot details
             $aktivitetNavn = $aktivitetTidspunkt->getAktivitet()->getNavn();
+            
+            // Calculate duration from start and end time if varighetMinutter is 0
+            $varighetMinutter = $aktivitetTidspunkt->getVarighetMinutter();
+            if ($varighetMinutter == 0) {
+                $start = $aktivitetTidspunkt->getStart();
+                $slutt = $aktivitetTidspunkt->getSlutt();
+                $interval = $start->diff($slutt);
+                $varighetMinutter = ($interval->h * 60) + $interval->i;
+            }
+            
+            // Format time slot for display
+            $formattedTidspunkt = [
+                'sted' => $aktivitetTidspunkt->getSted(),
+                'start' => $aktivitetTidspunkt->getStart()->format('Y-m-d H:i'),
+                'slutt' => $aktivitetTidspunkt->getSlutt()->format('Y-m-d H:i'),
+                'varighetMinutter' => $varighetMinutter,
+                'kunInterne' => $aktivitetTidspunkt->getErKunInterne()
+            ];
             
             return Inertia::render('Aktivitet/Register', [
                 'tidspunktId' => $tidspunktId,
-                'aktivitetNavn' => $aktivitetNavn
+                'aktivitetNavn' => $aktivitetNavn,
+                'tidspunkt' => $formattedTidspunkt
             ]);
         } catch (Exception $e) {
             // Activity doesn't exist or another error occurred, show a user-friendly message

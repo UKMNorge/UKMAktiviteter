@@ -8,7 +8,45 @@ const props = defineProps<{
   aktivitetNavn?: string;
   error?: string;
   errors?: any;
+  tidspunkt?: {
+    sted: string;
+    start: string;
+    slutt: string;
+    varighetMinutter: number;
+    kunInterne: boolean;
+  };
 }>();
+
+// Format the date for display
+const formatDate = (dateString: string) => {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  const options: Intl.DateTimeFormatOptions = {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  };
+  return date.toLocaleDateString('nb-NO', options);
+};
+
+// Calculate the duration in a friendly format
+const formatDuration = (minutes: number) => {
+  if (!minutes || minutes <= 0) {
+    return 'Varighet ikke spesifisert';
+  }
+  if (minutes < 60) {
+    return `${minutes} minutter`;
+  }
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+  if (remainingMinutes === 0) {
+    return `${hours} time${hours > 1 ? 'r' : ''}`;
+  }
+  return `${hours} time${hours > 1 ? 'r' : ''} og ${remainingMinutes} minutter`;
+};
 
 // Form setup
 const form = useForm({
@@ -47,23 +85,34 @@ const submit = () => {
                 <div class="activity-name">{{ props.aktivitetNavn || 'aktivitet' }}</div>
               </div>
             
-            <div v-if="error" class="mb-4">
-              <v-alert 
-                type="error" 
-                variant="flat"
-                color="#ff3d00"
-                border="top"
-                elevation="3"
-                class="text-center error-message"
-              >
-                <strong>{{ error }}</strong>
-              </v-alert>
-            </div>
-            
-              <!-- <p class="mb-4 text-body-1 responsive-text">
-                For å melde deg på {{ props.aktivitetNavn ? 'aktiviteten "' + props.aktivitetNavn + '"' : 'denne aktiviteten' }}, vennligst skriv inn ditt mobilnummer nedenfor.
-                Du vil motta en verifiseringskode på SMS for å bekrefte påmeldingen.
-              </p> -->
+              <div v-if="error" class="mb-4">
+                <v-alert 
+                  type="error" 
+                  variant="flat"
+                  color="#ff3d00"
+                  border="top"
+                  elevation="3"
+                  class="text-center error-message"
+                >
+                  <strong>{{ error }}</strong>
+                </v-alert>
+              </div>
+              
+              <!-- Time slot information -->
+              <div v-if="props.tidspunkt" class="time-slot-info mb-4 pa-3">
+                <div class="time-slot-title">{{ formatDate(props.tidspunkt.start) }}</div>
+                <div class="time-slot-details mt-2">
+                  <div>
+                    <v-icon size="small" class="mr-1">mdi-clock-outline</v-icon>
+                    {{ formatDuration(props.tidspunkt.varighetMinutter) }}
+                  </div>
+                  <div v-if="props.tidspunkt.sted" class="mt-1">
+                    <v-icon size="small" class="mr-1">mdi-map-marker</v-icon>
+                    {{ props.tidspunkt.sted }}
+                  </div>
+                </div>
+              </div>
+              
               <p class="mb-4 text-body-1 responsive-text">
                 For å melde deg på, vennligst skriv inn ditt mobilnummer nedenfor.
                 Du vil motta en verifiseringskode på SMS for å bekrefte påmeldingen.
@@ -153,6 +202,23 @@ const submit = () => {
   font-size: 1rem;
 }
 
+.time-slot-info {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 12px 16px;
+  border-left: 3px solid #00ff89;
+}
+
+.time-slot-title {
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+.time-slot-details {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
 @media (max-width: 600px) {
   .responsive-text {
     font-size: 0.95rem;
@@ -164,6 +230,14 @@ const submit = () => {
   
   .v-text-field {
     margin-top: 0.5rem;
+  }
+  
+  .time-slot-title {
+    font-size: 1rem;
+  }
+  
+  .time-slot-details {
+    font-size: 0.85rem;
   }
 }
 
