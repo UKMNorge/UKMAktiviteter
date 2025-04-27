@@ -64,6 +64,23 @@ class AktivitetController extends Controller
                 }
             }
             
+            // Sort time slots by date and then time
+            usort($formattedTidspunkter, function($a, $b) {
+                // First compare the date part
+                $dateA = substr($a['start'], 0, 10); // Get YYYY-MM-DD
+                $dateB = substr($b['start'], 0, 10);
+                
+                if ($dateA !== $dateB) {
+                    return $dateA <=> $dateB; // Use spaceship operator for comparison
+                }
+                
+                // If dates are the same, compare the time part
+                $timeA = substr($a['start'], 11); // Get HH:MM
+                $timeB = substr($b['start'], 11);
+                
+                return $timeA <=> $timeB;
+            });
+
             // If there's only one time slot in total (regardless of availability), redirect directly to registration
             // But only if that single time slot is not full
             if (count($formattedTidspunkter) === 1 && !$formattedTidspunkter[0]['erFullt']) {
