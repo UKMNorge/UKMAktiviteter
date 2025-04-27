@@ -75,7 +75,7 @@ class AktivitetController extends Controller
                 'aktivitetId' => $aktivitet->getId(),
                 'aktivitetNavn' => $aktivitet->getNavn(),
                 'aktivitetSted' => $aktivitet->getSted(),
-                'aktivitetBeskrivelse' => html_entity_decode(urldecode($aktivitet->getBeskrivelse())),
+                'aktivitetBilde' => $aktivitet->getImage(),
                 'tidspunkter' => $formattedTidspunkter
             ]);
         } catch (Exception $e) {

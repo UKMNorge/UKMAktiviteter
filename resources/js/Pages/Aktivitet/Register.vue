@@ -6,6 +6,7 @@ import GuestLayout from '@/Layouts/GuestLayout.vue';
 const props = defineProps<{
   tidspunktId: number;
   aktivitetNavn?: string;
+  aktivitetBilde?: string;
   error?: string;
   errors?: any;
   tidspunkt?: {
@@ -80,9 +81,14 @@ const submit = () => {
           <!-- Custom card with guaranteed white border -->
           <div class="custom-card-outer">
             <div class="custom-card-inner">
-              <div class="text-center mb-4">
-                <div class="responsive-title">Påmelding til</div>
-                <div class="activity-name">{{ props.aktivitetNavn || 'aktivitet' }}</div>
+              <div class="aktivitet-header mb-4">
+                <div v-if="props.aktivitetBilde" class="aktivitet-bilde-container">
+                  <img :src="props.aktivitetBilde" :alt="props.aktivitetNavn" class="aktivitet-bilde" />
+                </div>
+                <div class="aktivitet-info">
+                  <div class="responsive-title">Påmelding til</div>
+                  <div class="activity-name">{{ props.aktivitetNavn || 'aktivitet' }}</div>
+                </div>
               </div>
             
               <div v-if="error" class="mb-4">
@@ -219,6 +225,30 @@ const submit = () => {
   opacity: 0.9;
 }
 
+.aktivitet-header {
+  display: flex;
+  align-items: flex-start;
+}
+
+.aktivitet-bilde-container {
+  flex-shrink: 0;
+  margin-right: 16px;
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.aktivitet-bilde {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.aktivitet-info {
+  flex-grow: 1;
+}
+
 @media (max-width: 600px) {
   .responsive-text {
     font-size: 0.95rem;
@@ -238,6 +268,12 @@ const submit = () => {
   
   .time-slot-details {
     font-size: 0.85rem;
+  }
+  
+  .aktivitet-bilde-container {
+    width: 60px;
+    height: 60px;
+    margin-right: 12px;
   }
 }
 

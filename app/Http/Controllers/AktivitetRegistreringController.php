@@ -45,9 +45,13 @@ class AktivitetRegistreringController extends Controller
                 'kunInterne' => $aktivitetTidspunkt->getErKunInterne()
             ];
             
+            // Get the activity image
+            $aktivitetBilde = $aktivitetTidspunkt->getAktivitet()->getImage();
+            
             return Inertia::render('Aktivitet/Register', [
                 'tidspunktId' => $tidspunktId,
                 'aktivitetNavn' => $aktivitetNavn,
+                'aktivitetBilde' => $aktivitetBilde,
                 'tidspunkt' => $formattedTidspunkt
             ]);
         } catch (Exception $e) {

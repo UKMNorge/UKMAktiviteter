@@ -6,11 +6,11 @@ import { Link } from '@inertiajs/vue3';
     <v-app>
         <v-app-bar flat color="#01004c" dark>
             <v-container class="d-flex align-center">
-                <Link href="/" class="d-flex align-center text-decoration-none">
+                <a href="https://ukm.no/festivalen" class="d-flex align-center text-decoration-none" target="_blank">
                     <img src="https://grafikk.ukm.no/profil/logoer/jubileum/PNG/UKM_40_Liggende_Gr%C3%B8nn.png" 
                          alt="UKM Logo" 
                          class="mr-2 ukm-logo" />
-                </Link>
+                </a>
                 <v-spacer></v-spacer>
             </v-container>
         </v-app-bar>

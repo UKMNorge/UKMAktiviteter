@@ -12,7 +12,7 @@ const props = defineProps<{
   aktivitetId: number;
   aktivitetNavn: string;
   aktivitetSted: string;
-  aktivitetBeskrivelse: string;
+  aktivitetBilde?: string;
   tidspunkter: Array<{
     id: number;
     sted: string;
@@ -67,15 +67,16 @@ const formatDuration = (minutes: number) => {
           <!-- Custom card with guaranteed white border -->
           <div class="custom-card-outer">
             <div class="custom-card-inner">
-              <div class="text-center mb-4">
-                <div class="responsive-title">{{ aktivitetNavn }}</div>
-                <div v-if="aktivitetSted" class="text-subtitle-1 mb-2">
-                  <v-icon>mdi-map-marker</v-icon> {{ aktivitetSted }}
+              <div class="aktivitet-header">
+                <div v-if="aktivitetBilde" class="aktivitet-bilde-container">
+                  <img :src="aktivitetBilde" :alt="aktivitetNavn" class="aktivitet-bilde" />
                 </div>
-              </div>
-              
-              <div v-if="aktivitetBeskrivelse" class="mt-4 mb-4">
-                <div v-html="aktivitetBeskrivelse" class="text-body-1 responsive-text"></div>
+                <div class="aktivitet-info">
+                  <div class="responsive-title">{{ aktivitetNavn }}</div>
+                  <div v-if="aktivitetSted" class="text-subtitle-1 mt-2">
+                    <v-icon>mdi-map-marker</v-icon> {{ aktivitetSted }}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -133,16 +134,6 @@ const formatDuration = (minutes: number) => {
                     </span>
                   </div>
                 </div>
-              </div>
-              
-              <div class="text-center mt-6">
-                <v-btn
-                  color="#00ff89"
-                  variant="text"
-                  to="/"
-                >
-                  Tilbake til forsiden
-                </v-btn>
               </div>
             </div>
           </div>
@@ -233,6 +224,30 @@ const formatDuration = (minutes: number) => {
   opacity: 0.9;
 }
 
+.aktivitet-header {
+  display: flex;
+  align-items: flex-start;
+}
+
+.aktivitet-bilde-container {
+  flex-shrink: 0;
+  margin-right: 16px;
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.aktivitet-bilde {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.aktivitet-info {
+  flex-grow: 1;
+}
+
 .cursor-pointer {
   cursor: pointer;
 }
@@ -256,6 +271,12 @@ const formatDuration = (minutes: number) => {
   
   .time-slot-details {
     font-size: 0.85rem;
+  }
+  
+  .aktivitet-bilde-container {
+    width: 60px;
+    height: 60px;
+    margin-right: 12px;
   }
 }
 
