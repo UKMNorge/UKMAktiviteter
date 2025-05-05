@@ -15,7 +15,10 @@ Route::get('/', function (Request $request) {
 })->name('welcome');
 
 // Direct activity ID in URL (e.g., aktiviteter.ukm.dev/32)
-Route::get('/{id}', function ($id) {
+Route::get('/{id}', function ($id, Request $request) {
+    // Get the HTTP referer from the request
+    $referrerUrl = $request->header('referer');
+    
     // Validate that the ID is numeric
     if (is_numeric($id)) {
         // First try as aktivitet_id
@@ -38,8 +41,11 @@ Route::get('/{id}', function ($id) {
                         ->with('warning', 'Det er ikke flere ledige plasser på denne aktiviteten.');
                 }
                 
-                // Activity exists and has spots available, redirect to register form
-                return redirect()->route('aktivitet.register', ['tidspunktId' => $id]);
+                // Activity exists and has spots available, redirect to register form with referrer URL
+                return redirect()->route('aktivitet.register', [
+                    'tidspunktId' => $id,
+                    'referrerUrl' => $referrerUrl
+                ]);
             } catch (\Exception $e2) {
                 // Neither aktivitet_id nor tidspunkt_id is valid
                 return redirect()->route('welcome')

@@ -9,6 +9,7 @@ const props = defineProps<{
   aktivitetBilde?: string;
   error?: string;
   errors?: any;
+  referrerUrl?: string; // Added prop to receive referrer URL from backend
   tidspunkt?: {
     sted: string;
     start: string;
@@ -52,6 +53,7 @@ const formatDuration = (minutes: number) => {
 // Form setup
 const form = useForm({
   mobileNumber: '',
+  referrerUrl: props.referrerUrl || '', // Get referrer URL from props
 });
 
 // If there's a server-side error, set it in the form errors
@@ -81,6 +83,18 @@ const submit = () => {
           <!-- Custom card with guaranteed white border -->
           <div class="custom-card-outer">
             <div class="custom-card-inner">
+              <!-- Festival return button -->
+              <div class="festival-return-btn-container mb-3" v-if="props.referrerUrl">
+                <v-btn 
+                  variant="text" 
+                  :href="props.referrerUrl" 
+                  prepend-icon="mdi-arrow-left" 
+                  class="festival-return-btn"
+                >
+                  Gå tilbake til festivalsiden
+                </v-btn>
+              </div>
+              
               <div class="aktivitet-header mb-4">
                 <div v-if="props.aktivitetBilde" class="aktivitet-bilde-container">
                   <img :src="props.aktivitetBilde" :alt="props.aktivitetNavn" class="aktivitet-bilde" />
@@ -281,5 +295,17 @@ const submit = () => {
   .responsive-text {
     font-size: 0.9rem;
   }
+}
+
+/* Festival return button styling */
+.festival-return-btn-container {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.festival-return-btn {
+  color: #00ff89 !important;
+  font-size: 0.9rem;
+  padding: 0;
 }
 </style>

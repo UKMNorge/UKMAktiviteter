@@ -15,7 +15,7 @@ class AktivitetRegistreringController extends Controller
     /**
      * Show the registration form for an activity
      */
-    public function showRegistrationForm($tidspunktId)
+    public function showRegistrationForm(Request $request, $tidspunktId)
     {
         try {
             // Try to create an instance of AktivitetTidspunkt with the given ID
@@ -48,11 +48,15 @@ class AktivitetRegistreringController extends Controller
             // Get the activity image
             $aktivitetBilde = $aktivitetTidspunkt->getAktivitet()->getImage();
             
+            // Get the referrer URL from the request
+            $referrerUrl = $request->query('referrerUrl');
+            
             return Inertia::render('Aktivitet/Register', [
                 'tidspunktId' => $tidspunktId,
                 'aktivitetNavn' => $aktivitetNavn,
                 'aktivitetBilde' => $aktivitetBilde,
-                'tidspunkt' => $formattedTidspunkt
+                'tidspunkt' => $formattedTidspunkt,
+                'referrerUrl' => $referrerUrl // Pass referrer URL to the view
             ]);
         } catch (Exception $e) {
             // Activity doesn't exist or another error occurred, show a user-friendly message
@@ -119,6 +123,7 @@ class AktivitetRegistreringController extends Controller
             return Inertia::render('Aktivitet/Verify', [
                 'tidspunktId' => $tidspunktId,
                 'mobileNumber' => $request->get('mobileNumber'),
+                'referrerUrl' => $request->get('referrerUrl'), // Pass the referrer URL to the next step
                 'success' => 'En verifiseringskode er sendt til ditt mobilnummer.'
             ]);
         } catch (Exception $e) {
@@ -165,10 +170,11 @@ class AktivitetRegistreringController extends Controller
             );
 
             if ($verified) {
-                // Return to success page
+                // Return to success page with referrerUrl
                 return Inertia::render('Aktivitet/Success', [
                     'tidspunktId' => $tidspunktId,
-                    'success' => 'Du er nå påmeldt aktiviteten!'
+                    'success' => 'Du er nå påmeldt aktiviteten!',
+                    'referrerUrl' => $request->get('referrerUrl') // Pass referrer URL to success page
                 ]);
             }
 
@@ -176,6 +182,7 @@ class AktivitetRegistreringController extends Controller
             return Inertia::render('Aktivitet/Verify', [
                 'tidspunktId' => $tidspunktId,
                 'mobileNumber' => $request->get('mobileNumber'),
+                'referrerUrl' => $request->get('referrerUrl'), // Keep referrer URL
                 'error' => 'Verifiseringskoden er ikke gyldig. Vennligst prøv igjen.'
             ]);
         } catch (Exception $e) {
@@ -183,6 +190,7 @@ class AktivitetRegistreringController extends Controller
             return Inertia::render('Aktivitet/Verify', [
                 'tidspunktId' => $tidspunktId,
                 'mobileNumber' => $request->get('mobileNumber'),
+                'referrerUrl' => $request->get('referrerUrl'), // Keep referrer URL
                 'error' => $e->getMessage()
             ]);
         }
