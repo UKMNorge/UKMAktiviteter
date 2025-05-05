@@ -60,7 +60,7 @@ const props = defineProps<{
 
                 <v-btn
                   color="#00ff89"
-                  :href="props.referrerUrl || '/'"
+                  href="https://ukm.no/festivalen/workshops/"
                   size="large"
                   class="mt-4"
                 >
